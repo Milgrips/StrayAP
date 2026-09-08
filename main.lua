@@ -102,6 +102,9 @@ function connect(server, slot, password)
             print("  " .. tostring(player.slot) .. ": " .. player.name ..
                   " playing " .. ap:get_player_game(player.slot) .. "\n")
         end
+        
+        local backpack = FindFirstOf("BP_Backpack_C")
+        backpack.m_inventory = {}
     end
 
     function on_slot_refused(reasons)
@@ -286,7 +289,7 @@ function ResyncInventory()
             print("[ArchipelagoMod] Can't resync item inventory when not connected!\n")
             return
         end
-        backpack:ClearInventory()
+        backpack.m_inventory = {}
         for _, item in ipairs(all_received_items) do
             receiving.ProcessItem(item) -- reprocess all items
         end
@@ -300,15 +303,16 @@ function SanitizeBackpackInventory()
         print("[ArchipelagoMod] Can't sanitize the inventory because the cat doesn't have the backpack!\n")
         return
     end
+    print("Sanitizing inventory...")
     local array = backpack.m_inventory
     local temp = {} -- temporary Lua table
     array:ForEach(function(i, elem)
         local val = elem:get()
         if val ~= nil then
-            temp[#temp + 1] = val -- for each element, store its actual value inside the Lua table (if not nil)
+            temp[i] = val -- for each element, store its actual value inside the Lua table (if not nil)
         end
     end)
-    backpack:ClearInventory() -- wipe the inventory
+    backpack.m_inventory = {} -- wipe the inventory
     for i, value in ipairs(temp) do
         array[i] = value -- reassign each value explicity
     end
