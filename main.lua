@@ -309,7 +309,7 @@ function SanitizeBackpackInventory()
     array:ForEach(function(i, elem)
         local val = elem:get()
         if val ~= nil then
-            temp[i] = val -- for each element, store its actual value inside the Lua table (if not nil)
+            temp[#temp + 1] = val -- for each element, store its actual value inside the Lua table (if not nil)
         end
     end)
     backpack.m_inventory = {} -- wipe the inventory
